@@ -1,0 +1,26 @@
+const express = require("express");
+const bodyParser = require("body-parser");
+require("dotenv").config();
+const cors = require("cors");
+const app = express();
+const db = require("./config/postgres");
+const publicRoutes = require("./src/routes/publicRoutes");
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const PORT = process.env.PORT;
+
+app.use(publicRoutes);
+
+db.sync({ alter: true })
+  .then(() => {
+    console.log("db sync successfull");
+  })
+  .catch((err) => {
+    console.log("Error connecting DB: ", err);
+  });
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
