@@ -1,0 +1,9 @@
+{
+  "postgres": {
+    "username": "root",
+    "password": "my-secret-pw",
+    "db_name": "swiftorder",
+    "host": "156.67.27.35",
+    "port": 4321
+  }
+}

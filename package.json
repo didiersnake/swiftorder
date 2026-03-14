@@ -1,0 +1,42 @@
+{
+  "name": "swiftorder",
+  "version": "1.0.0",
+  "description": "Data collection automated via whatsapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "sequelize",
+    "rest",
+    "api",
+    "postgresql",
+    "whatsapp",
+    "webhook"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/didiersnake/swiftorder.git"
+  },
+  "author": "didierdjakoua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/didiersnake/swiftorder/issues"
+  },
+  "homepage": "https://github.com/didiersnake/swiftorder#readme",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "body-parser": "^2.2.2",
+    "config": "^4.4.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14",
+    "pg": "^8.20.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8"
+  }
+}
