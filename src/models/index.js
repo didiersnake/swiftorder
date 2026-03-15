@@ -4,10 +4,14 @@ const { DataTypes } = require("sequelize");
 const orderModel = require("./orderModel")(sequelize);
 const productModel = require("./productModel")(sequelize);
 const userModel = require("./userModel")(sequelize);
+const messageModel = require("./messageModel")(sequelize);
 
 // Define associations
 userModel.hasMany(orderModel, { foreignKey: "userId", as: "orders" });
 orderModel.belongsTo(userModel, { foreignKey: "userId", as: "user" });
+
+userModel.hasMany(messageModel, { foreignKey: "userId", as: "messages" });
+messageModel.belongsTo(userModel, { foreignKey: "userId", as: "user" });
 
 const orderProduct = sequelize.define("OrderProduct", {
   quantity: {
@@ -29,5 +33,6 @@ module.exports = {
   productModel,
   orderModel,
   orderProduct,
+  messageModel,
   sequelize,
 };

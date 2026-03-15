@@ -1,8 +1,5 @@
 const { userModel, orderModel, productModel, sequelize } = require("../models");
 
-console.log("Order:", typeof orderModel, orderModel?.name);
-console.log("Product:", typeof productModel, productModel?.name);
-console.log("User:", typeof userModel, userModel?.name);
 module.exports = {
   findOne: async (id) => {
     const response = await orderModel.findByPk(id, {
@@ -17,12 +14,9 @@ module.exports = {
 
   create: async (data) => {
     const { userId, items } = data;
-    if (!userId || !items) {
-      return res.status(400).json({ message: "user, items and total are required" });
-    }
 
     const user = await userModel.findByPk(userId);
-    if (!user) return res.status(404).json({ message: "User does not exist" });
+    if (!user) return { message: "User does not exist" };
 
     const productIds = items.map((item) => {
       return item.productId;
@@ -31,7 +25,7 @@ module.exports = {
 
     // Check if all products exist
     if (products.length !== items.length) {
-      return res.status(404).json({ message: "One or more products do not exist" });
+      return { message: "One or more products do not exist" };
     }
 
     // for (const item of items) {

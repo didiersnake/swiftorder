@@ -9,6 +9,7 @@ const publicRoutes = require("./src/routes/publicRoutes");
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/api/webhook", express.raw({ type: "application/json" }));
 
 const PORT = process.env.PORT;
 
