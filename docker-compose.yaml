@@ -1,21 +1,4 @@
 services:
-  db:
-    image: postgres
-    restart: always
-    # set shared memory limit when using docker compose
-    shm_size: 128mb
-    environment:
-      POSTGRES_PASSWORD: my-secret-pw
-      POSTGRES_USER: root
-    volumes:
-      - db_data:/postgres/swiftorder/data
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-
   nodejs:
   buid: .
   ports:
@@ -23,9 +6,4 @@ services:
   restart: unless-stopped
   environment:
     DATABASE_URL: "postgresql://root:my-secret-pw@156.67.27.35:4321/swiftorder?sslmode=disable"
-    PORT: 3030
-  depends_on:
-    - db
-
-volumes:
-  db_data:
+    PORT: "3030"
