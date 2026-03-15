@@ -1,9 +1,9 @@
 services:
   nodejs:
-    buid: .
+    build: .
     ports:
       - 3030:3030
     restart: unless-stopped
     environment:
-      DATABASE_URL: "postgresql://root:my-secret-pw@156.67.27.35:4321/swiftorder?sslmode=disable"
+      DATABASE_URL: "postgres://root:my-secret-pw@156.67.27.35:4321/swiftorder?sslmode=disable"
       PORT: "3030"
