@@ -4,6 +4,7 @@ const { DataTypes } = require("sequelize");
 const orderModel = require("./orderModel")(sequelize);
 const productModel = require("./productModel")(sequelize);
 const userModel = require("./userModel")(sequelize);
+const messageModel = require("./messageModel")(sequelize);
 
 // Define associations
 userModel.hasMany(orderModel, { foreignKey: "userId", as: "orders" });
@@ -29,5 +30,6 @@ module.exports = {
   productModel,
   orderModel,
   orderProduct,
+  messageModel,
   sequelize,
 };

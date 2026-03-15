@@ -1,8 +1,5 @@
 const { userModel, orderModel, productModel, sequelize } = require("../models");
 
-console.log("Order:", typeof orderModel, orderModel?.name);
-console.log("Product:", typeof productModel, productModel?.name);
-console.log("User:", typeof userModel, userModel?.name);
 module.exports = {
   findOne: async (id) => {
     const response = await orderModel.findByPk(id, {
