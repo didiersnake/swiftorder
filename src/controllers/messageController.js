@@ -7,8 +7,8 @@ module.exports = {
   findAll: async (req, res) => {},
 
   create: async (req, res) => {
-    const { data } = req.body;
-    if (!data) {
+    const { data, userId } = req.body;
+    if (!data || !userId) {
       return res.status(400).json({ message: "data is required" });
     }
     try {
