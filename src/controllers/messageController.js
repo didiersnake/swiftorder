@@ -67,6 +67,7 @@ module.exports = {
           if (userId === null) {
             console.log("Error messageController.webhook: ", "user not found");
           }
+          console.log(userId);
 
           const response = await messageService.create({ userId, data: payload });
           if (response === null || response === undefined) {

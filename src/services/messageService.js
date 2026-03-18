@@ -17,7 +17,7 @@ module.exports = {
         Op.eq,
         phone.slice(-8),
       ),
-    });
+    })?.dataValues?.id;
     if (!userId) return null;
     return userId;
   },
