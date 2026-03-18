@@ -6,7 +6,10 @@ const { sequelize } = require("../models");
 module.exports = {
   findOne: async (req, res) => {},
 
-  findAll: async (req, res) => {},
+  findAll: async (req, res) => {
+    const response = await messageService.findAll();
+    return response;
+  },
 
   sendMessage: async (req, res) => {
     const { phone, message } = req.body;
@@ -64,7 +67,7 @@ module.exports = {
 
         try {
           const user = await messageService.getMessageUser(payload.from);
-          if (user === null) {
+          if (user === null || user === undefined) {
             console.log("Error messageController.webhook: ", "user not found");
           } else {
             const userId = user.id;
