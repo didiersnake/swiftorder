@@ -7,9 +7,10 @@ module.exports = {
   },
 
   create: async (data) => {
-    const { name } = data;
+    const { name, phone } = data;
     const normalizedName = normalizeNames(name);
     data.name = normalizedName;
+    data.phone = phone.trim();
     const response = await userModel.create(data);
     return response;
   },
