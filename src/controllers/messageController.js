@@ -1,6 +1,8 @@
 const messageService = require("../services/messageService");
 const crypto = require("crypto");
 const { verifyWebhookSignature } = require("../utils/helpers");
+const { Op } = require("sequelize");
+const { sequelize } = require("../models");
 module.exports = {
   findOne: async (req, res) => {},
 
@@ -26,7 +28,7 @@ module.exports = {
       return res.status(400).json({ message: "data is required" });
     }
     try {
-      const response = await messageService.create(data);
+      const response = await messageService.create({ userId, data });
       if (response === null || response === undefined) {
         return res.status(400).json({ message: "message creation failed" });
       }
@@ -37,7 +39,7 @@ module.exports = {
     }
   },
 
-  whatsappWebhook: (req, res) => {
+  whatsappWebhook: async (req, res) => {
     const signature = req.headers["x-hub-signature-256"];
     const payload = req.body;
     const secret = process.env.WHATSAPP_WEBHOOK_SECRET;
@@ -52,12 +54,27 @@ module.exports = {
     // Handle different event types based on data.event
     switch (data.event) {
       case "message":
+        const payload = data.payload;
         console.log("New message:", {
-          id: data.payload.id,
-          from: data.payload.from,
-          body: data.payload.body,
-          chat_id: data.payload.chat_id,
+          id: payload.id,
+          from: payload.from,
+          body: payload.body,
+          chat_id: payload.chat_id,
         });
+
+        try {
+          const userId = await messageService.getMessageUserId(payload.from);
+          if (userId === null) {
+            console.log("Error messageController.webhook: ", "user not found");
+          }
+
+          const response = await messageService.create({ userId, data: payload });
+          if (response === null || response === undefined) {
+            console.log("Error messageController.webhook: ", "message creation failed");
+          }
+        } catch (error) {
+          console.log("Error messageController.webhook: ", error);
+        }
         break;
 
       case "message.ack":
