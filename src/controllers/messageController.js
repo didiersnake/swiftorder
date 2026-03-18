@@ -48,7 +48,6 @@ module.exports = {
 
     // Parse and process webhook data
     const data = JSON.parse(payload);
-    // console.log("Received webhook:", data);
 
     // Handle different event types based on data.event
     switch (data.event) {
@@ -61,36 +60,11 @@ module.exports = {
         });
         break;
 
-      case "message.reaction":
-        console.log("Reaction:", {
-          reaction: data.payload.reaction,
-          reacted_message_id: data.payload.reacted_message_id,
-        });
-        break;
-
-      case "message.revoked":
-        console.log("Message revoked:", data.payload.revoked_message_id);
-        break;
-
-      case "message.edited":
-        console.log("Message edited:", {
-          original_id: data.payload.original_message_id,
-          new_body: data.payload.body,
-        });
-        break;
-
       case "message.ack":
         console.log(`Message ${data.payload.receipt_type}:`, {
           chat_id: data.payload.chat_id,
           message_ids: data.payload.ids,
           description: data.payload.receipt_type_description,
-        });
-        break;
-
-      case "group.participants":
-        console.log(`Group ${data.payload.type} event:`, {
-          chat_id: data.payload.chat_id,
-          affected_users: data.payload.jids,
         });
         break;
     }
