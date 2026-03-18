@@ -7,9 +7,9 @@ const db = require("./config/postgres");
 const publicRoutes = require("./src/routes/publicRoutes");
 
 app.use(cors());
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/api/webhook", express.raw({ type: "application/json" }));
+app.use("/api/webhook", express.raw({ type: "application/json" })); //Read webhook request raw as raw bytes first
+app.use(bodyParser.json());
 
 const PORT = process.env.PORT;
 
