@@ -8,7 +8,7 @@ module.exports = {
     return response;
   },
 
-  getMessageUserId: async (number) => {
+  getMessageUser: async (number) => {
     const phone = number.split("@")[0]; //get phone from webhook payload
     //match last 8 digits from phone to search user in database
     const userId = await userModel.findOne({
@@ -17,7 +17,7 @@ module.exports = {
         Op.eq,
         phone.slice(-8),
       ),
-    })?.dataValues?.id;
+    });
     if (!userId) return null;
     return userId;
   },
