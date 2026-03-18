@@ -8,8 +8,8 @@ const publicRoutes = require("./src/routes/publicRoutes");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/api/webhook", express.raw({ type: "application/json" })); //Read webhook request raw as raw bytes first
-app.use(bodyParser.json());
+app.use("/api/webhook", express.raw({ type: "application/json" })); //Read webhook request.body as raw bytes first
+app.use(bodyParser.json()); //Then read / convert to javascript object
 
 const PORT = process.env.PORT;
 
