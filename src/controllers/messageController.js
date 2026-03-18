@@ -63,15 +63,15 @@ module.exports = {
         });
 
         try {
-          const userId = await messageService.getMessageUserId(payload.from);
-          if (userId === null) {
+          const user = await messageService.getMessageUser(payload.from);
+          if (user === null) {
             console.log("Error messageController.webhook: ", "user not found");
-          }
-          console.log(userId);
-
-          const response = await messageService.create({ userId, data: payload });
-          if (response === null || response === undefined) {
-            console.log("Error messageController.webhook: ", "message creation failed");
+          } else {
+            const userId = user.id;
+            const response = await messageService.create({ userId, data: payload });
+            if (response === null || response === undefined) {
+              console.log("Error messageController.webhook: ", "message creation failed");
+            }
           }
         } catch (error) {
           console.log("Error messageController.webhook: ", error);
