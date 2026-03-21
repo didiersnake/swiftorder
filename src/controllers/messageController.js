@@ -68,7 +68,9 @@ module.exports = {
           if (user === null || user === undefined) {
             console.log("Error messageController.webhook: ", "user not found");
           } else {
-            await redis_client.set(payload?.from, payload?.body);
+            if (payload?.body.length < 3) {
+              await redis_client.set(payload?.from, payload?.body);
+            }
 
             const userId = user.id;
             const response = await messageService.create({ userId, data: payload });
