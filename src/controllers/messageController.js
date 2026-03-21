@@ -1,7 +1,7 @@
 const messageService = require("../services/messageService");
 const crypto = require("crypto");
 const { verifyWebhookSignature } = require("../utils/helpers");
-const redis = require("../../config/redis");
+const redis_client = require("../../config/redis");
 module.exports = {
   findOne: async (req, res) => {},
 
@@ -68,6 +68,10 @@ module.exports = {
           if (user === null || user === undefined) {
             console.log("Error messageController.webhook: ", "user not found");
           } else {
+            if (payload?.body.length >= 3) {
+              await redis_client.set(payload?.from, payload?.body);
+            }
+
             const userId = user.id;
             const response = await messageService.create({ userId, data: payload });
             if (response === null || response === undefined) {
