@@ -1,8 +1,7 @@
 const messageService = require("../services/messageService");
 const crypto = require("crypto");
 const { verifyWebhookSignature } = require("../utils/helpers");
-const { Op } = require("sequelize");
-const { sequelize } = require("../models");
+const redis = require("../../config/redis");
 module.exports = {
   findOne: async (req, res) => {},
 
@@ -50,7 +49,6 @@ module.exports = {
     if (verifyWebhookSignature(payload, signature, secret)) {
       return res.status(401).send("Unauthorized");
     }
-
     // Parse and process webhook data
     const data = JSON.parse(payload);
 
