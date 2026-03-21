@@ -11,6 +11,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: "postgres://root:my-secret-pw@156.67.27.35:4321/swiftorder?sslmode=disable"
+      REDIS_URL: "redis://:my-secret-pw@redis:6379/1"
     networks:
       - traefik_proxy
 
