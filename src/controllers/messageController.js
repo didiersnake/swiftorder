@@ -1,12 +1,14 @@
 const messageService = require("../services/messageService");
 const crypto = require("crypto");
 const { verifyWebhookSignature } = require("../utils/helpers");
-const { Op } = require("sequelize");
-const { sequelize } = require("../models");
+const redis = require("../../config/redis");
 module.exports = {
   findOne: async (req, res) => {},
 
-  findAll: async (req, res) => {},
+  findAll: async (req, res) => {
+    const response = await messageService.findAll();
+    return response;
+  },
 
   sendMessage: async (req, res) => {
     const { phone, message } = req.body;
@@ -47,7 +49,6 @@ module.exports = {
     if (verifyWebhookSignature(payload, signature, secret)) {
       return res.status(401).send("Unauthorized");
     }
-
     // Parse and process webhook data
     const data = JSON.parse(payload);
 
@@ -64,7 +65,7 @@ module.exports = {
 
         try {
           const user = await messageService.getMessageUser(payload.from);
-          if (user === null) {
+          if (user === null || user === undefined) {
             console.log("Error messageController.webhook: ", "user not found");
           } else {
             const userId = user.id;
