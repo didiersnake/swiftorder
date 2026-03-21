@@ -68,7 +68,7 @@ module.exports = {
           if (user === null || user === undefined) {
             console.log("Error messageController.webhook: ", "user not found");
           } else {
-            if (payload?.body.length < 3) {
+            if (payload?.body.length >= 3) {
               await redis_client.set(payload?.from, payload?.body);
             }
 
