@@ -47,6 +47,16 @@ module.exports = {
     if (!data) {
       return res.status(400).json({ message: "data is required" });
     }
+    try {
+      const response = messageService.buildOrder(data);
+      if (response === null || response === undefined) {
+        return res.status(400).json({ message: "Error build order" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      console.log("Error messageController.buildOrderConfirmation: ", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   },
 
   whatsappWebhook: async (req, res) => {
@@ -71,13 +81,21 @@ module.exports = {
           chat_id: payload.chat_id,
         });
         const message = payload.body.trim();
+        const sender = payload.from.split("@")[0];
 
         try {
           //Match response format ( number x number )
-          const responseTest = /^\d+\s*x\s*\d+$/.test(message);
+          const isCorrectFormat = message
+            .split("\n")
+            .filter((el) => el.trim() !== "") // remove any empty line
+            .every((el) => {
+              let data = el.trim();
+              return /^\d+\s*x\s*\d+$/i.test(data);
+            });
+          console.log("isCorrect", isCorrectFormat);
 
-          if (responseTest) {
-            const user = await messageService.getMessageUser(payload.from);
+          if (isCorrectFormat) {
+            const user = await messageService.getMessageUser(sender);
 
             if (user === null || user === undefined) {
               console.log("Error messageController.webhook: ", "user not found");
@@ -87,16 +105,20 @@ module.exports = {
               const userId = user.id;
               const response = await messageService.create({ userId, data: payload });
 
-              // Confirm user order via text
+              //Call confirm user order via text webhook
               if (response) {
                 await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
-                  user: payload.from,
+                  user: sender,
                   data: message,
                 });
               }
             }
           } else {
             //Send whatsapp message to customer to reply with correct format
+            await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
+              user: sender,
+              data: "Veillez envoyer votre commande suivant le format correct...",
+            });
           }
         } catch (error) {
           console.log("Error messageController.webhook: ", error);

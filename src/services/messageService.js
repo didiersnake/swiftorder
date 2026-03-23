@@ -14,13 +14,12 @@ module.exports = {
   },
 
   getMessageUser: async (number) => {
-    const phone = number.split("@")[0]; //get phone from webhook payload
     //match last 8 digits from phone to search user in database
     const userId = await userModel.findOne({
       where: sequelize.where(
         sequelize.fn("RIGHT", sequelize.col("phone"), 8),
         Op.eq,
-        phone.slice(-8),
+        number.slice(-8),
       ),
     });
     if (!userId) return null;
@@ -29,17 +28,21 @@ module.exports = {
 
   buildOrder: async (data) => {
     const rows = data.split("\n");
+
     const result = await Promise.all(
       rows.map(async (el) => {
-        let productId = el.split("x")[0];
-        let quantity = el.split("x")[1];
+        const splitValue = /^x$/i;
+        let [id, quantity] = el.split(splitValue);
+        let productId = parseInt(id);
+
         const product = await productModel.findOne({ where: { id: productId } });
-        if (product) {
-          return { product_name: product.name, quantity: quantity };
+        if (!product) {
+          return null;
         }
+        return { product_name: product.name, quantity };
       }),
     );
-    return result;
+    return result.filter(Boolean); //filter out null
   },
 
   sendMessage: async ({ message, phone }) => {
