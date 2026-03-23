@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { messageModel, sequelize, userModel } = require("../models");
+const { messageModel, sequelize, userModel, productModel } = require("../models");
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -25,6 +25,21 @@ module.exports = {
     });
     if (!userId) return null;
     return userId;
+  },
+
+  buildOrder: async (data) => {
+    const rows = data.split("\n");
+    const result = await Promise.all(
+      rows.map(async (el) => {
+        let productId = el.split("x")[0];
+        let quantity = el.split("x")[1];
+        const product = await productModel.findOne({ where: { id: productId } });
+        if (product) {
+          return { product_name: product.name, quantity: quantity };
+        }
+      }),
+    );
+    return result;
   },
 
   sendMessage: async ({ message, phone }) => {
