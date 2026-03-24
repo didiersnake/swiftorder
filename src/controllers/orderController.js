@@ -18,7 +18,7 @@ module.exports = {
     }
   },
 
-  buidOrderRequestFromText: (req, res) => {
+  buidOrderRequestFromText: async (req, res) => {
     const { phone, data } = req.body;
     if (!phone || !data) {
       return res
@@ -26,7 +26,7 @@ module.exports = {
         .json({ message: "sender's phone and message data  are required" });
     }
     try {
-      const response = orderService.buidOrderRequestFromText({ phone, data });
+      const response = await orderService.buidOrderRequestFromText({ phone, data });
       return res.status(201).json(response);
     } catch (error) {
       console.log("Error in orderController.buildRequestFromText: ", error);
