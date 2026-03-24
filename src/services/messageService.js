@@ -31,7 +31,7 @@ module.exports = {
 
     const result = await Promise.all(
       rows.map(async (el) => {
-        const splitValue = /^x$/i;
+        const splitValue = /\s*x\s*/i;
         let [id, quantity] = el.split(splitValue);
         let productId = parseInt(id);
 
@@ -39,7 +39,7 @@ module.exports = {
         if (!product) {
           return null;
         }
-        return { product_name: product.name, quantity };
+        return { product_name: product.name, quantity: quantity };
       }),
     );
     return result.filter(Boolean); //filter out null
