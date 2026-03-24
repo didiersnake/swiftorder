@@ -113,12 +113,18 @@ module.exports = {
                 });
               }
             }
-          } else {
-            //Send whatsapp message to customer to reply with correct format
+          }
+          if (message === "1") {
             await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
               user: sender,
-              data: "Veillez envoyer votre commande suivant le format correct...",
+              data: message,
             });
+          } else {
+            //Send whatsapp message to customer to reply with correct format
+            // await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
+            //   user: sender,
+            //   data: "Veillez envoyer votre commande suivant le format correct...",
+            // });
           }
         } catch (error) {
           console.log("Error messageController.webhook: ", error);
