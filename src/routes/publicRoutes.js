@@ -20,6 +20,7 @@ v1.post("/products/create", productController.create);
 v1.get("/orders", orderController.findAll);
 v1.get("/orders/:id", orderController.findOne);
 v1.post("/orders/create", orderController.create);
+v1.post("/build/request", orderController.buidOrderRequestFromText);
 
 //TODO: add routes for message
 v1.post("/webhook", messageController.whatsappWebhook);

@@ -12,6 +12,35 @@ module.exports = {
     return response;
   },
 
+  buidOrderRequestFromText: async ({ phone, data }) => {
+    const user = await userModel.findOne({
+      where: sequelize.where(
+        sequelize.fn("RIGHT", sequelize.col("phone"), 8),
+        Op.eq,
+        phone.slice(-8),
+      ),
+    });
+
+    const rows = data.split("\n");
+
+    let result = await Promise.all(
+      rows.map(async (el) => {
+        const splitValue = /\s*x\s*/i;
+        let [id, quantity] = el.split(splitValue);
+        let productId = parseInt(id);
+        quantity = parseInt(quantity);
+        const product = await productModel.findOne({ where: { id: productId } });
+        if (!product) {
+          return null;
+        }
+        return { productId: id, quantity: quantity };
+      }),
+    );
+    result = result.filter(Boolean); //filter out null
+    const response = { userId: user.id, items: result };
+    return response;
+  },
+
   create: async (data) => {
     const { userId, items } = data;
 
