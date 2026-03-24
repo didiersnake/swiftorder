@@ -1,4 +1,5 @@
 const { userModel, orderModel, productModel, sequelize } = require("../models");
+const { Op } = require("sequelize");
 
 module.exports = {
   findOne: async (id) => {
@@ -33,7 +34,7 @@ module.exports = {
         if (!product) {
           return null;
         }
-        return { productId: id, quantity: quantity };
+        return { productId: product.id, quantity: quantity };
       }),
     );
     result = result.filter(Boolean); //filter out null
