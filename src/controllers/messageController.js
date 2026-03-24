@@ -80,6 +80,7 @@ module.exports = {
           body: payload.body,
           chat_id: payload.chat_id,
         });
+        if (payload.body === undefined) res.status(200).send("Body is not text");
         const message = payload.body.trim();
         const sender = payload.from.split("@")[0];
 
@@ -113,12 +114,17 @@ module.exports = {
                 });
               }
             }
-          } else {
-            //Send whatsapp message to customer to reply with correct format
+          } else if (message === "1") {
             await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
               user: sender,
-              data: "Veillez envoyer votre commande suivant le format correct...",
+              data: message,
             });
+          } else {
+            //Send whatsapp message to customer to reply with correct format
+            // await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
+            //   user: sender,
+            //   data: "Veillez envoyer votre commande suivant le format correct...",
+            // });
           }
         } catch (error) {
           console.log("Error messageController.webhook: ", error);
@@ -126,11 +132,11 @@ module.exports = {
         break;
 
       case "message.ack":
-        console.log(`Message ${data.payload.receipt_type}:`, {
-          chat_id: data.payload.chat_id,
-          message_ids: data.payload.ids,
-          description: data.payload.receipt_type_description,
-        });
+        // console.log(`Message ${data.payload.receipt_type}:`, {
+        //   chat_id: data.payload.chat_id,
+        //   message_ids: data.payload.ids,
+        //   description: data.payload.receipt_type_description,
+        // });
         break;
     }
 
