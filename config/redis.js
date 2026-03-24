@@ -16,4 +16,4 @@ client
     console.log("Redis client connection failed : ", error);
   });
 
-module.export = client;
+module.exports = client;

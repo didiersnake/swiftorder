@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { messageModel, sequelize, userModel } = require("../models");
+const { messageModel, sequelize, userModel, productModel } = require("../models");
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -14,17 +14,35 @@ module.exports = {
   },
 
   getMessageUser: async (number) => {
-    const phone = number.split("@")[0]; //get phone from webhook payload
     //match last 8 digits from phone to search user in database
     const userId = await userModel.findOne({
       where: sequelize.where(
         sequelize.fn("RIGHT", sequelize.col("phone"), 8),
         Op.eq,
-        phone.slice(-8),
+        number.slice(-8),
       ),
     });
     if (!userId) return null;
     return userId;
+  },
+
+  buildOrder: async (data) => {
+    const rows = data.split("\n");
+
+    const result = await Promise.all(
+      rows.map(async (el) => {
+        const splitValue = /^x$/i;
+        let [id, quantity] = el.split(splitValue);
+        let productId = parseInt(id);
+
+        const product = await productModel.findOne({ where: { id: productId } });
+        if (!product) {
+          return null;
+        }
+        return { product_name: product.name, quantity };
+      }),
+    );
+    return result.filter(Boolean); //filter out null
   },
 
   sendMessage: async ({ message, phone }) => {
