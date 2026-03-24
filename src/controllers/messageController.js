@@ -42,13 +42,13 @@ module.exports = {
     }
   },
 
-  buildOrderConfirmation: (req, res) => {
+  buildOrderConfirmation: async (req, res) => {
     const { data } = req.body;
     if (!data) {
       return res.status(400).json({ message: "data is required" });
     }
     try {
-      const response = messageService.buildOrder(data);
+      const response = await messageService.buildOrder(data);
       if (response === null || response === undefined) {
         return res.status(400).json({ message: "Error build order" });
       }
