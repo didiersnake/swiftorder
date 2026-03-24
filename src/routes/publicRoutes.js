@@ -23,6 +23,7 @@ v1.post("/orders/create", orderController.create);
 
 //TODO: add routes for message
 v1.post("/webhook", messageController.whatsappWebhook);
+v1.post("/order/confirm", messageController.buildOrderConfirmation);
 v1.get("/messages", messageController.findAll);
 routes.use("/api", v1);
 module.exports = routes;
