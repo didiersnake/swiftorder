@@ -50,6 +50,11 @@ module.exports = {
       return res.status(400).json({ message: "user, items are required" });
     }
     try {
+      //Check if user has an existing order for current date
+      const order = await orderService.findExistingOrderByDate(new Date(), userId);
+      if (order) {
+        await orderService.delete(order.id);
+      }
       const response = await orderService.create({ userId, items });
       if (response === undefined || response === null) {
         return res.status(404).json({ message: "order failed to create" });

@@ -13,6 +13,19 @@ module.exports = {
     return response;
   },
 
+  findExistingOrderByDate: async (date, userId) => {
+    //filter orders from user by current date
+    const response = await orderModel.findOne({
+      where: {
+        createdAt: {
+          [Op.gte]: date,
+        },
+        userId: userId,
+      },
+    });
+    return response;
+  },
+
   buidOrderRequestFromText: async ({ phone, data }) => {
     const user = await userModel.findOne({
       where: sequelize.where(
@@ -120,5 +133,9 @@ module.exports = {
   },
 
   update: async (id, data) => {},
-  delete: async (id) => {},
+  delete: async (id) => {
+    // delete order with it associations
+    const response = await orderModel.destroy({ where: { id } });
+    return response;
+  },
 };
