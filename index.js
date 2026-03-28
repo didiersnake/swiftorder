@@ -15,7 +15,10 @@ const PORT = process.env.PORT;
 
 app.use(publicRoutes);
 
-db.sync({ alter: true })
+db
+  .sync
+  //{ alter: true }
+  ()
   .then(() => {
     console.log("db sync successfull");
   })

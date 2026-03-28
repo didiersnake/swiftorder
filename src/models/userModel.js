@@ -19,7 +19,16 @@ const User = (sequelize) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      // unique: true,
+      unique: true,
+    },
+    roles: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      defaultValue: ["user"],
+    },
+    deliveryDay: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   });
 };
