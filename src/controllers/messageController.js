@@ -1,6 +1,6 @@
 const messageService = require("../services/messageService");
-const crypto = require("crypto");
 const { verifyWebhookSignature } = require("../utils/helpers");
+const constants = require("../utils/constants");
 const redis_client = require("../../config/redis");
 const axios = require("axios");
 module.exports = {
@@ -101,17 +101,20 @@ module.exports = {
             if (user === null || user === undefined) {
               console.log("Error messageController.webhook: ", "user not found");
             } else {
-              await redis_client.set(sender, message);
+              if (!sender.roles.includes(constants.ROLES.ADMIN)) {
+                //only save user message if not admin
+                await redis_client.set(sender, message);
 
-              const userId = user.id;
-              const response = await messageService.create({ userId, data: payload });
+                const userId = user.id;
+                const response = await messageService.create({ userId, data: payload });
 
-              //Call confirm user order via text webhook
-              if (response) {
-                await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
-                  user: sender,
-                  data: message,
-                });
+                //Call confirm user order via text webhook
+                if (response) {
+                  await axios.post(process.env.N8N_WEBHOOK + "/send-message", {
+                    user: sender,
+                    data: message,
+                  });
+                }
               }
             }
           } else if (message === "1") {
