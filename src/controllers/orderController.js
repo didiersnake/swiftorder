@@ -45,16 +45,26 @@ module.exports = {
   },
 
   create: async (req, res) => {
+    //Create order if does not exist else update
     const { userId, items } = req.body;
     if (!userId || !items || !Array.isArray(items || items.length === 0)) {
       return res.status(400).json({ message: "user, items are required" });
     }
+
     try {
       //Check if user has an existing order for current date
       const order = await orderService.findExistingOrderByDate(new Date(), userId);
+
       if (order) {
-        await orderService.delete(order.id);
+        console.log(order.id);
+
+        const response = await orderService.update(order.id, items);
+        if (response === undefined || response === null) {
+          return res.status(404).json({ message: "order failed to update" });
+        }
+        return res.status(201).json(response);
       }
+
       const response = await orderService.create({ userId, items });
       if (response === undefined || response === null) {
         return res.status(404).json({ message: "order failed to create" });
