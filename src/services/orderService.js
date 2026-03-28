@@ -1,4 +1,10 @@
-const { userModel, orderModel, productModel, sequelize } = require("../models");
+const {
+  userModel,
+  orderModel,
+  productModel,
+  sequelize,
+  orderProduct,
+} = require("../models");
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -15,10 +21,15 @@ module.exports = {
 
   findExistingOrderByDate: async (date, userId) => {
     //filter orders from user by current date
+    const start = new Date(date);
+    start.setUTCHours(0, 0, 0, 0);
+
+    const end = new Date(date);
+    end.setUTCHours(23, 59, 59, 999);
     const response = await orderModel.findOne({
       where: {
         createdAt: {
-          [Op.gte]: date,
+          [Op.between]: [start, end],
         },
         userId: userId,
       },
@@ -132,7 +143,65 @@ module.exports = {
     return response;
   },
 
-  update: async (id, data) => {},
+  update: async (orderId, items) => {
+    const productIds = items.map((item) => {
+      return item.productId;
+    });
+    const products = await productModel.findAll({ where: { id: productIds } });
+
+    // Check if all products exist
+    if (products.length !== items.length) {
+      return { message: "One or more products do not exist" };
+    }
+
+    const calculatedTotal = products.reduce((sum, product) => {
+      const item = items.find((i) => i.productId === product.id);
+      return sum + product.price * item.quantity;
+    }, 0);
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      const updatedOrder = await orderModel.update(
+        { totalAmount: calculatedTotal },
+        { where: { id: orderId } },
+        { transaction },
+      );
+
+      if (updatedOrder) {
+        //Remove old product associations only
+        await orderProduct.destroy({ where: { OrderId: orderId }, transaction });
+
+        //update or re-insert products in order
+        for (const item of items) {
+          const product = products.find((p) => p.id === item.productId);
+          await orderProduct.create(
+            {
+              quantity: item.quantity,
+              unitPrice: product.price,
+              ProductId: product.id,
+              OrderId: orderId,
+            },
+            { transaction },
+          );
+        }
+      }
+
+      await transaction.commit();
+
+      //return the updated order with associated products
+      const createdOrder = await orderModel.findByPk(orderId, {
+        include: [
+          { model: productModel, as: "products" },
+          // { model: userModel, as: "user" },
+        ],
+      });
+      return createdOrder;
+    } catch (error) {
+      console.log("Error updating order: ", error);
+      await transaction.rollback();
+    }
+  },
   delete: async (id) => {
     // delete order with it associations
     const response = await orderModel.destroy({ where: { id } });
