@@ -28,11 +28,11 @@ pipeline {
         always {
             echo 'pipeline finished'
         }
-        failure {
-            mail(to: 'didier.djakoua@gmail.com',
-            subject: "Failed Pipeline",
-            body: "Something is wrong with ${currentBuild.currentResult}")
-        }
+        // failure {
+        //     mail(to: 'didier.djakoua@gmail.com',
+        //     subject: "Failed Pipeline",
+        //     body: "Something is wrong with ${currentBuild.currentResult}")
+        // }
     }
 
 
