@@ -12,8 +12,7 @@ pipeline {
             steps {
                 echo 'Cleanup...'
                 // sh 'cd swiftorder'
-                sh 'docker container stop swiftorder'
-                sh 'docker rm swiftorder'
+                sh 'docker compose down'
             }
         }
         stage('Build & Deploy') {
