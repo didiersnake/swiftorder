@@ -32,6 +32,7 @@ pipeline {
             mail(to: 'didier.djakoua@gmail.com',
             subject: "Failed Pipeline",
             body: "Something is wrong with ${currentBuild.currentResult}")
+        }
     }
 
 
