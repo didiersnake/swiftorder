@@ -26,10 +26,10 @@ const User = (sequelize) => {
       allowNull: false,
       defaultValue: ["user"],
     },
-    deliveryDay: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    // deliveryDay: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
   });
 };
 
