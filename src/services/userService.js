@@ -10,7 +10,7 @@ module.exports = {
     const { name, phone } = data;
     const normalizedName = normalizeNames(name);
     data.name = normalizedName;
-    data.phone = phone.trim();
+    data.phone = phone.trim().length < 10 ? `237${phone}` : phone;
     const response = await userModel.create(data);
     return response;
   },
