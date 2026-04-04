@@ -22,7 +22,7 @@ const User = (sequelize) => {
       unique: true,
     },
     roles: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.JSON,
       allowNull: false,
       defaultValue: ["user"],
     },
