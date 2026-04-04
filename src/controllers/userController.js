@@ -38,12 +38,18 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { name, email, phone } = req.body;
+    const { name, email, phone, deliveryDay, roles } = req.body;
     if (!name || !email || !phone) {
       return res.status(400).json({ message: "name, email and phone are required" });
     }
     try {
-      const response = await userService.create({ name, email, phone });
+      const response = await userService.create({
+        name,
+        email,
+        phone,
+        deliveryDay,
+        roles,
+      });
       if (response === null || response === undefined) {
         return res.status(400).json({ message: "user creation failed" });
       }
