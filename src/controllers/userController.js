@@ -39,8 +39,10 @@ module.exports = {
 
   create: async (req, res) => {
     const { name, email, phone, deliveryDay, roles } = req.body;
-    if (!name || !email || !phone) {
-      return res.status(400).json({ message: "name, email and phone are required" });
+    if (!name || !email || !phone || !deliveryDay) {
+      return res
+        .status(400)
+        .json({ message: "name, email, deliveryDay and phone are required" });
     }
     try {
       const response = await userService.create({
