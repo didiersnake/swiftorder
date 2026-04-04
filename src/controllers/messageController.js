@@ -101,8 +101,8 @@ module.exports = {
             if (user === null || user === undefined) {
               console.log("Error messageController.webhook: ", "user not found");
             } else {
+              //only save user message if not admin
               if (!user.roles.includes(constants.ROLES.ADMIN)) {
-                //only save user message if not admin
                 await redis_client.set(sender, message);
 
                 const userId = user.id;
